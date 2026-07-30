@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sweet Pull | Discord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#241634; --bg-alt:#2F1D44; --bg-alt-2:#3A2454;
+    --candy-pink:#FF6FA8; --candy-pink-dark:#E0508A;
+    --candy-yellow:#FFD166; --mint:#6FE7C7;
+    --cream:#FBF3E7; --text-dim:#C9B8DE;
+    --radius-lg:28px; --radius-md:18px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:'Quicksand',sans-serif;overflow-x:hidden;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;margin:0;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  /* NAV */
+  nav.topbar{position:sticky;top:0;z-index:50;background:rgba(36,22,52,0.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.06);}
+  nav.topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Baloo 2',sans-serif;font-size:1.3rem;font-weight:700;}
+  .brand img{height:30px;width:30px;border-radius:9px;object-fit:cover;}
+  .nav-cta{background:var(--candy-pink);color:var(--bg);font-weight:700;padding:10px 20px;border-radius:999px;font-size:0.92rem;transition:transform .15s,background .2s;white-space:nowrap;}
+  .nav-cta:hover{background:var(--candy-yellow);transform:translateY(-2px);}
+  .cart-nav-btn{position:relative;background:var(--bg-alt-2);border:2px solid rgba(255,255,255,0.1);color:var(--cream);font-family:'Baloo 2',sans-serif;font-weight:700;font-size:0.92rem;padding:9px 16px;border-radius:999px;cursor:pointer;transition:border-color .18s,transform .15s;white-space:nowrap;}
+  .cart-nav-btn:hover{border-color:var(--mint);transform:translateY(-2px);}
+  .cart-badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;background:var(--candy-pink);color:var(--bg);font-size:0.72rem;font-weight:800;border-radius:999px;padding:0 5px;margin-left:7px;}
+  .cart-badge.empty{background:rgba(255,255,255,0.12);color:var(--text-dim);}
+
+  /* HERO */
+  header.hero{padding:70px 0 60px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;align-items:center;gap:40px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--mint);font-weight:700;letter-spacing:0.12em;font-size:0.78rem;text-transform:uppercase;margin-bottom:18px;}
+  .eyebrow::before{content:"";width:18px;height:2px;background:var(--mint);display:inline-block;}
+  h1.title{font-size:clamp(2.6rem,6vw,4.4rem);line-height:0.98;font-weight:800;}
+  h1.title .accent{color:var(--candy-pink);}
+  .tagline{margin-top:18px;font-size:1.12rem;color:var(--text-dim);max-width:480px;line-height:1.55;}
+  .cta-row{margin-top:34px;display:flex;gap:16px;flex-wrap:wrap;}
+  .hero-logo{height:64px;width:64px;border-radius:18px;object-fit:cover;margin-bottom:18px;box-shadow:0 8px 22px -6px rgba(255,111,168,0.5);}
+  .machine-wrap{display:flex;justify-content:center;}
+  .hero-art{width:100%;max-width:380px;height:auto;border-radius:24px;animation:float 4s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  /* BTNS */
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:16px 28px;border-radius:999px;font-family:'Baloo 2',sans-serif;font-weight:700;font-size:1.02rem;cursor:pointer;border:none;transition:transform .18s,box-shadow .18s,background .2s;}
+  .btn:disabled{opacity:0.45;cursor:not-allowed;transform:none!important;}
+  .btn-primary{background:var(--candy-pink);color:var(--bg);box-shadow:0 10px 26px -8px rgba(255,111,168,0.55);}
+  .btn-primary:hover:not(:disabled){transform:translateY(-3px) scale(1.02);background:#FF82B6;}
+  .btn-secondary{background:transparent;color:var(--mint);border:2px solid var(--mint);}
+  .btn-secondary:hover:not(:disabled){background:rgba(111,231,199,0.12);transform:translateY(-3px);}
+  .btn-yellow{background:var(--candy-yellow);color:var(--bg);box-shadow:0 10px 26px -8px rgba(255,209,102,0.55);}
+  .btn-yellow:hover:not(:disabled){transform:translateY(-3px) scale(1.02);}
+  .btn-green{background:#22c55e;color:#fff;box-shadow:0 10px 26px -8px rgba(34,197,94,0.4);}
+  .btn-green:hover:not(:disabled){transform:translateY(-3px) scale(1.02);background:#16a34a;}
+
+  /* FEATURES */
+  section.features{padding:30px 0 70px;}
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .feature-card{background:var(--bg-alt);border-radius:var(--radius-md);padding:28px 24px;border:1px solid rgba(255,255,255,0.05);}
+  .feature-card .icon{font-size:1.8rem;}
+  .feature-card h3{font-size:1.15rem;margin:14px 0 8px;}
+  .feature-card p{margin:0;color:var(--text-dim);font-size:0.95rem;line-height:1.5;}
+
+  /* PRICING */
+  section.pricing{padding:20px 0 80px;}
+  .section-head{text-align:center;max-width:560px;margin:0 auto 46px;}
+  .section-head .eyebrow{justify-content:center;}
+  .section-head .eyebrow::before{display:none;}
+  .section-head h2{font-size:clamp(2rem,4vw,2.6rem);}
+  .section-head p{color:var(--text-dim);margin-top:12px;}
+  .category-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:36px;}
+  .category-pill{padding:12px 26px;border-radius:999px;background:var(--bg-alt);border:2px solid rgba(255,255,255,0.08);color:var(--text-dim);font-family:'Baloo 2',sans-serif;font-weight:700;font-size:0.98rem;cursor:pointer;transition:all .18s;}
+  .category-pill:hover{border-color:var(--mint);color:var(--cream);}
+  .category-pill.active{background:var(--candy-pink);border-color:var(--candy-pink);color:var(--bg);}
+  .offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px;margin-top:8px;}
+  .price-card{background:linear-gradient(160deg,var(--bg-alt-2),var(--bg-alt));border-radius:var(--radius-lg);padding:30px 24px;border:2px solid var(--candy-pink);display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
+  .price-card h3{font-size:1.5rem;}
+  .price-card .price{font-family:'Baloo 2',sans-serif;font-size:2.6rem;font-weight:800;color:var(--candy-yellow);margin:14px 0 4px;}
+  .price-card .price span{font-size:1rem;color:var(--text-dim);font-family:'Quicksand';font-weight:600;}
+  .price-card .price-per{font-size:0.78rem;color:var(--text-dim);margin-bottom:2px;}
+  .price-card .people{color:var(--mint);font-weight:700;font-size:0.95rem;margin-bottom:24px;}
+  .price-card .btn{width:100%;justify-content:center;padding:14px 20px;font-size:0.98rem;}
+  .offer-category-tag{display:inline-block;background:rgba(111,231,199,0.15);color:var(--mint);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border-radius:999px;padding:3px 12px;margin-bottom:10px;}
+  .price-card .admin-del{position:absolute;top:16px;left:16px;background:rgba(255,80,80,0.15);color:#FF9E9E;border:none;border-radius:8px;font-size:0.72rem;padding:4px 9px;cursor:pointer;font-family:'Quicksand';font-weight:700;display:none;}
+  body.admin-mode .price-card .admin-del{display:inline-block;}
+  .empty-pricing{text-align:center;color:var(--text-dim);}
+  .pricing-note{text-align:center;margin-top:30px;color:var(--text-dim);font-size:0.88rem;}
+  .pricing-note a{color:var(--mint);font-weight:700;}
+
+  /* QTY */
+  .qty-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:18px;width:100%;}
+  .qty-label{font-size:0.88rem;color:var(--text-dim);font-weight:600;}
+  .qty-controls{display:flex;align-items:center;gap:10px;width:100%;}
+  .qty-btn{background:var(--bg-alt-2);border:2px solid rgba(255,255,255,0.12);color:var(--cream);width:44px;height:44px;border-radius:12px;font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
+  .qty-btn:hover:not(:disabled){background:var(--candy-pink);border-color:var(--candy-pink);color:var(--bg);}
+  .qty-btn:disabled{opacity:0.35;cursor:default;}
+  .qty-input{flex:1;background:var(--bg);border:2px solid rgba(255,255,255,0.15);color:var(--candy-yellow);font-family:'Baloo 2';font-size:1.5rem;font-weight:800;text-align:center;border-radius:12px;padding:8px 10px;outline:none;min-width:0;transition:border-color .15s;}
+  .qty-input:focus{border-color:var(--candy-pink);}
+  .qty-input::-webkit-inner-spin-button,.qty-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  .qty-input[type=number]{-moz-appearance:textfield;}
+  .qty-presets{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
+  .qty-preset{background:var(--bg-alt-2);border:1px solid rgba(255,255,255,0.1);color:var(--text-dim);border-radius:8px;padding:5px 13px;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Quicksand';}
+  .qty-preset:hover{border-color:var(--candy-yellow);color:var(--candy-yellow);}
+
+  /* FOOTER */
+  footer{padding:36px 0 30px;border-top:1px solid rgba(255,255,255,0.06);}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  footer p{color:var(--text-dim);font-size:0.85rem;margin:0;}
+  .admin-link{color:rgba(201,184,222,0.45);font-size:0.78rem;cursor:pointer;border:none;background:none;font-family:'Quicksand';}
+  .admin-link:hover{color:var(--text-dim);}
+
+  /* MODALS */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,8,22,0.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--bg-alt);border-radius:var(--radius-lg);padding:32px;max-width:500px;width:100%;border:1px solid rgba(255,255,255,0.08);max-height:92vh;overflow-y:auto;}
+  .modal h3{color:var(--cream);font-size:1.3rem;margin-bottom:6px;}
+  .modal p.sub{color:var(--text-dim);font-size:0.88rem;margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:0.82rem;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+  .field input,.field textarea,.field select{width:100%;padding:11px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:var(--bg);color:var(--cream);font-family:'Quicksand';font-size:0.95rem;resize:vertical;}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--mint);}
+  .modal .btn{width:100%;justify-content:center;margin-top:6px;}
+  .modal-close{background:none;border:none;color:var(--text-dim);font-size:0.85rem;cursor:pointer;margin-top:14px;width:100%;text-align:center;font-family:'Quicksand';font-weight:600;}
+  .status-msg{font-size:0.82rem;margin-top:10px;color:var(--mint);min-height:18px;}
+  .status-msg.error{color:#FF9E9E;}
+  .admin-list{margin-top:22px;border-top:1px solid rgba(255,255,255,0.08);padding-top:16px;}
+  .admin-list-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:0.88rem;color:var(--text-dim);border-bottom:1px solid rgba(255,255,255,0.05);gap:8px;}
+  .admin-list-item button{background:rgba(255,80,80,0.15);color:#FF9E9E;border:none;border-radius:8px;padding:4px 10px;font-size:0.75rem;cursor:pointer;font-weight:700;flex-shrink:0;}
+  .admin-section-title{font-family:'Baloo 2';font-size:1rem;color:var(--candy-yellow);margin:18px 0 8px;}
+  .upsell-list{margin-top:8px;}
+  .upsell-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:0.85rem;background:rgba(255,209,102,0.07);border-radius:10px;margin-bottom:6px;border:1px solid rgba(255,209,102,0.15);gap:8px;}
+  .upsell-item span{color:var(--text-dim);flex:1;}
+  .upsell-item .upsell-tag{color:var(--candy-yellow);font-weight:700;font-size:0.75rem;background:rgba(255,209,102,0.15);padding:2px 8px;border-radius:999px;white-space:nowrap;}
+  .upsell-item button{background:rgba(255,80,80,0.15);color:#FF9E9E;border:none;border-radius:8px;padding:4px 10px;font-size:0.72rem;cursor:pointer;font-weight:700;flex-shrink:0;}
+
+  /* UPSELL */
+  .upsell-offer-card{background:linear-gradient(135deg,rgba(255,209,102,0.1),rgba(255,111,168,0.08));border:2px solid rgba(255,209,102,0.3);border-radius:18px;padding:20px;margin-bottom:14px;cursor:pointer;transition:all .2s;position:relative;}
+  .upsell-offer-card:hover{border-color:var(--candy-yellow);transform:translateY(-2px);}
+  .upsell-offer-card.selected{border-color:var(--candy-yellow);background:linear-gradient(135deg,rgba(255,209,102,0.18),rgba(255,111,168,0.12));}
+  .upsell-offer-card .upsell-name{font-family:'Baloo 2';font-size:1.1rem;font-weight:700;}
+  .upsell-offer-card .upsell-original{font-size:0.85rem;color:var(--text-dim);text-decoration:line-through;}
+  .upsell-offer-card .upsell-discounted{font-family:'Baloo 2';font-size:1.5rem;font-weight:800;color:var(--candy-yellow);}
+  .upsell-offer-card .upsell-badge{position:absolute;top:12px;right:12px;background:var(--candy-yellow);color:var(--bg);font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:999px;}
+  .upsell-offer-card .upsell-desc{font-size:0.82rem;color:var(--text-dim);margin-top:4px;}
+  .upsell-no-thanks{background:none;border:none;color:var(--text-dim);font-size:0.85rem;cursor:pointer;text-decoration:underline;margin-top:6px;font-family:'Quicksand';width:100%;text-align:center;padding:8px;}
+  .upsell-no-thanks:hover{color:var(--cream);}
+
+  /* CART BAR */
+  .cart-bar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:rgba(36,22,52,0.97);backdrop-filter:blur(12px);border-top:2px solid var(--candy-pink);padding:16px 28px;display:none;}
+  .cart-bar.visible{display:block;}
+  .cart-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .cart-bar-info{display:flex;flex-direction:column;gap:2px;}
+  .cart-bar-title{font-family:'Baloo 2';font-weight:700;font-size:1.05rem;}
+  .cart-bar-sub{font-size:0.82rem;color:var(--text-dim);}
+  .cart-bar-actions{display:flex;gap:12px;flex-wrap:wrap;}
+
+  /* CART MODAL */
+  .cart-summary{background:var(--bg);border-radius:16px;padding:18px;margin-bottom:18px;}
+  .cart-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:0.92rem;}
+  .cart-line:last-child{border-bottom:none;}
+  .cart-line .line-name{color:var(--cream);}
+  .cart-line .line-price{color:var(--candy-yellow);font-family:'Baloo 2';font-weight:700;}
+  .cart-line.discount .line-price{color:var(--mint);}
+  .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:2px solid rgba(255,255,255,0.12);}
+  .cart-total-row .total-label{font-family:'Baloo 2';font-size:1.1rem;font-weight:700;}
+  .cart-total-row .total-price{font-family:'Baloo 2';font-size:1.6rem;font-weight:800;color:var(--candy-yellow);}
+  .cart-line-remove{background:rgba(255,80,80,0.15);color:#FF9E9E;border:none;border-radius:8px;width:24px;height:24px;font-size:0.85rem;font-weight:700;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+  .cart-line-remove:hover{background:rgba(255,80,80,0.3);}
+
+  /* PAYMENT MODAL */
+  .payment-box{background:var(--bg);border-radius:16px;padding:20px;margin:16px 0;}
+  .ltc-address-box{background:var(--bg-alt-2);border:2px solid var(--candy-yellow);border-radius:14px;padding:14px 16px;font-family:'Baloo 2';font-size:0.88rem;color:var(--candy-yellow);word-break:break-all;cursor:pointer;position:relative;transition:border-color .2s;}
+  .ltc-address-box:hover{border-color:var(--mint);}
+  .ltc-amount-big{font-family:'Baloo 2';font-size:2rem;font-weight:800;color:var(--cream);text-align:center;margin:10px 0 4px;}
+  .ltc-amount-sub{font-size:0.82rem;color:var(--text-dim);text-align:center;margin-bottom:16px;}
+  .copy-hint{font-size:0.72rem;color:var(--text-dim);text-align:center;margin-top:6px;}
+  .copy-hint.copied{color:var(--mint);}
+  .payment-status{text-align:center;padding:16px;border-radius:14px;margin-top:16px;font-weight:700;font-size:0.95rem;}
+  .payment-status.waiting{background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.2);color:var(--candy-yellow);}
+  .payment-status.pending{background:rgba(111,231,199,0.08);border:1px solid rgba(111,231,199,0.2);color:var(--mint);}
+  .payment-status.confirmed{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ade80;}
+  .confirm-dots{display:inline-flex;gap:6px;margin-top:8px;}
+  .confirm-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.12);transition:background .3s;}
+  .confirm-dot.done{background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,0.5);}
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.2);border-top-color:var(--candy-yellow);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .rate-info{font-size:0.75rem;color:var(--text-dim);text-align:center;margin-top:8px;}
+
+  /* BOTS MODAL */
+  .bot-link-item{background:var(--bg);border-radius:12px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.08);}
+  .bot-link-item .bot-name{font-family:'Baloo 2';font-weight:700;font-size:0.98rem;color:var(--cream);margin-bottom:6px;}
+  .bot-link-item .bot-url{font-size:0.78rem;color:var(--mint);word-break:break-all;opacity:0.7;}
+  .bot-link-item a.btn{margin-top:10px;padding:10px 18px;font-size:0.88rem;}
+  .server-id-box{background:var(--bg-alt-2);border-radius:14px;padding:18px;margin-top:16px;border:1px solid rgba(111,231,199,0.2);}
+  .server-id-box label{display:block;font-size:0.82rem;color:var(--text-dim);margin-bottom:8px;font-weight:600;}
+  .server-id-box input{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:var(--bg);color:var(--cream);font-family:'Quicksand';font-size:0.95rem;outline:none;}
+  .server-id-box input:focus{outline:2px solid var(--mint);}
+  .vc-stats-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:14px;border:1px solid rgba(111,231,199,0.25);}
+  .vc-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .vc-stat{background:var(--bg-alt-2);border-radius:10px;padding:10px 12px;text-align:center;}
+  .vc-stat .vc-num{display:block;font-family:'Baloo 2';font-size:1.3rem;font-weight:800;color:var(--candy-yellow);}
+  .vc-stat .vc-label{display:block;font-size:0.7rem;color:var(--text-dim);margin-top:2px;}
+  .vc-history-table{margin-top:10px;max-height:220px;overflow-y:auto;border-top:1px solid rgba(255,255,255,0.08);padding-top:8px;}
+  .vc-history-row{display:flex;justify-content:space-between;gap:8px;font-size:0.78rem;color:var(--text-dim);padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .vc-history-row span:first-child{color:var(--cream);}
+  .vc-history-empty{font-size:0.8rem;color:var(--text-dim);text-align:center;padding:8px 0;}
+
+  @media(max-width:760px){
+    .hero-grid{grid-template-columns:1fr;text-align:center;}
+    .tagline{margin-left:auto;margin-right:auto;}
+    .cta-row{justify-content:center;}
+    .features-grid{grid-template-columns:1fr;}
+    .machine-wrap{order:-1;margin-bottom:10px;}
+    .cart-bar .wrap{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <img src="https://cdn.discordapp.com/attachments/1484814779980976150/1490225355087151144/sweet_pull_logo.gif?ex=6a342e43&is=6a32dcc3&hm=c1139d2b480eff68a22425da2af44f5069bc4a6f092b812330f09059acda92e0" alt="Sweet Pull">
+      Sweet Pull
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="cart-nav-btn" id="open-cart-nav-btn">🛒 Koszyk<span class="cart-badge" id="cart-badge">0</span></button>
+      <a class="nav-cta" href="https://discord.gg/sweetpull" target="_blank" rel="noopener">Dołącz</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <img class="hero-logo" src="https://cdn.discordapp.com/attachments/1484814779980976150/1490225355087151144/sweet_pull_logo.gif?ex=6a342e43&is=6a32dcc3&hm=c1139d2b480eff68a22425da2af44f5069bc4a6f092b812330f09059acda92e0" alt="Sweet Pull logo">
+      <div class="eyebrow">Serwer Discord</div>
+      <h1 class="title">Sweet<br><span class="accent">Pull</span>.</h1>
+      <p class="tagline">Ulepsz swój serwer Discord.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://discord.gg/sweetpull" target="_blank" rel="noopener">🍬 Dołącz do naszego Discorda</a>
+        <a class="btn btn-secondary" href="#cennik">Zakup Pullki</a>
+      </div>
+    </div>
+    <div class="machine-wrap">
+      <img class="hero-art" src="sweet-pull-hero.png" alt="Sweet Pull">
+    </div>
+  </div>
+</header>
+
+<section class="features">
+  <div class="wrap features-grid">
+    <div class="feature-card"><div class="icon">💬</div><h3>Żywa społeczność</h3><p>Codzienne rozmowy, granie razem i ludzie, którzy naprawdę chcą tu być.</p></div>
+    <div class="feature-card"><div class="icon">🎉</div><h3>Eventy i konkursy</h3><p>Regularne losowania, wyzwania i niespodzianki dla aktywnych członków.</p></div>
+    <div class="feature-card"><div class="icon">🍭</div><h3>Ekskluzywne pullki</h3><p>Wykręć swoją pullkę i odbierz nagrodę – im większa pullka, tym słodszy zestaw.</p></div>
+  </div>
+</section>
+
+<section class="pricing" id="cennik">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Cennik</div>
+      <h2>Wybierz kategorię pullki</h2>
+      <p>Wybierz kategorię, a zobaczysz dostępne pullki od najtańszej do najdroższej.</p>
+    </div>
+    <div class="category-pills" id="category-pills"></div>
+    <div id="pricing-detail"></div>
+    <p class="pricing-note">Nie wiesz, którą pullkę wybrać? Zapytaj na <a href="https://discord.gg/sweetpull" target="_blank" rel="noopener">naszym Discordzie</a> — pomożemy.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Sweet Pull · nie jesteśmy powiązani z Discord Inc.</p>
+  </div>
+</footer>
+
+<!-- ADMIN LOGIN -->
+<div class="modal-overlay" id="login-overlay">
+  <div class="modal">
+    <h3>Panel administratora</h3>
+    <p class="sub">Wpisz hasło, aby zarządzać cennikiem pullek.</p>
+    <div class="field"><label>Hasło</label><input type="password" id="admin-pass" placeholder="••••••••"></div>
+    <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center;">Zaloguj</button>
+    <div class="status-msg error" id="login-status"></div>
+    <button class="modal-close" id="close-login">Zamknij</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="modal-overlay" id="admin-overlay">
+  <div class="modal">
+    <h3>Panel admina — Sweet Pull</h3>
+    <p class="sub">Zarządzaj pullkami i poleceniami.</p>
+
+    <div class="admin-section-title">➕ Dodaj pullkę</div>
+    <div class="field"><label>Nazwa pullki</label><input type="text" id="f-name" placeholder="np. VIP Boost x5"></div>
+    <div class="field"><label>Kategoria</label>
+      <select id="f-cat"><option value="Shop">Shop</option><option value="Exchange">Exchange</option><option value="Inne">Inne</option></select>
+    </div>
+    <div class="field"><label>Cena za 100 osób (zł)</label><input type="number" id="f-price" placeholder="np. 190" min="0" step="1"></div>
+    <div class="field"><label>Maksymalna ilość osób</label><input type="number" id="f-people" placeholder="np. 500" min="1"></div>
+
+    <div class="field"><label>Provider backupu</label>
+      <select id="f-provider">
+        <option value="vaultcord">VaultCord</option>
+        <option value="restorecord">RestoreCord</option>
+      </select>
+    </div>
+
+    <!-- VaultCord fields -->
+    <div id="f-vc-fields">
+      <div class="field"><label>Serwer VaultCord (do backupu)<br><small style="color:var(--text-dim);font-weight:400">Wybierz z listy podłączonych serwerów z konta VaultCord.</small></label>
+        <select id="f-vaultcord-id"><option value="">— otwórz panel jeszcze raz jeśli lista jest pusta —</option></select>
+      </div>
+    </div>
+
+    <!-- RestoreCord fields -->
+    <div id="f-rc-fields" style="display:none;">
+      <div class="field"><label>Konto RestoreCord (klucz API)<br><small style="color:var(--text-dim);font-weight:400">Wybierz konto z listy kluczy dodanych w Vercel (Settings → Environment Variables). Format nazwy zmiennej: RC_KEY_NAZWATWOJA.</small></label>
+        <select id="f-rc-key"><option value="">⏳ Wczytuję dostępne klucze…</option></select>
+      </div>
+      <div class="field"><label>ID serwera RestoreCord (serverId)<br><small style="color:var(--text-dim);font-weight:400">Wewnętrzne ID serwera z panelu RestoreCord (nie Discord guild ID).</small></label>
+        <input type="text" id="f-rc-server-id" placeholder="np. 42">
+      </div>
+    </div>
+
+    <div class="field"><label>Linki do botów (każdy w osobnej linii)<br><small style="color:var(--text-dim);font-weight:400">Format: Nazwa Bota|https://discord.com/oauth2/authorize?...</small></label>
+      <textarea id="f-bots" rows="4" placeholder="Mega Bot|https://discord.com/oauth2/authorize?client_id=123...&#10;Super Bot|https://discord.com/oauth2/authorize?client_id=456..."></textarea>
+    </div>
+    <button class="btn btn-primary" id="add-item-btn" style="width:100%;justify-content:center;">Dodaj pullkę</button>
+    <div class="status-msg" id="admin-status"></div>
+
+    <div class="admin-section-title">🎁 Dodaj polecanie (upsell)</div>
+    <p style="font-size:0.82rem;color:var(--text-dim);margin:0 0 12px">Produkt ze zniżką 10%, który pojawi się klientowi po dodaniu do koszyka.</p>
+    <div class="field"><label>Nazwa polecania</label><input type="text" id="u-name" placeholder="np. Nitro Classic x1"></div>
+    <div class="field"><label>Pasuje do kategorii (Ctrl+klik = multi)</label>
+      <select id="u-cat" multiple style="height:90px;"><option value="Shop" selected>Shop</option><option value="Exchange">Exchange</option><option value="Inne">Inne</option></select>
+    </div>
+    <div class="field"><label>Cena bazowa za 100 osób (zł)</label><input type="number" id="u-price" placeholder="np. 50" min="0" step="1"></div>
+    <div class="field"><label>Krótki opis (opcjonalnie)</label><input type="text" id="u-desc" placeholder="np. Boost na cały miesiąc"></div>
+    <button class="btn btn-yellow" id="add-upsell-btn" style="width:100%;justify-content:center;">Dodaj polecanie</button>
+    <div class="status-msg" id="upsell-status"></div>
+
+    <div class="admin-section-title">📋 Lista pullk</div>
+    <div class="admin-list" id="admin-list"></div>
+    <div class="admin-section-title" style="margin-top:22px;">✨ Lista poleceń</div>
+    <div class="upsell-list" id="upsell-admin-list"></div>
+    <button class="modal-close" id="close-admin">Zamknij panel</button>
+  </div>
+</div>
+
+<!-- QTY MODAL -->
+<div class="modal-overlay" id="qty-overlay">
+  <div class="modal" style="max-width:380px">
+    <h3 id="qty-title">Dodaj do koszyka</h3>
+    <p class="sub" id="qty-sub"></p>
+    <div class="qty-wrap">
+      <div class="qty-label">Ile osób chcesz w tej pullce?</div>
+      <div class="qty-controls">
+        <button class="qty-btn" id="qty-minus">−</button>
+        <input class="qty-input" type="number" id="qty-num" value="1" min="1" inputmode="numeric" autocomplete="off">
+        <button class="qty-btn" id="qty-plus">+</button>
+      </div>
+      <div style="font-size:0.73rem;color:var(--text-dim);margin-top:-4px">Wpisz liczbę lub klikaj +/− (przytrzymaj = szybko)</div>
+      <div class="qty-presets" id="qty-presets"></div>
+      <div class="qty-max" id="qty-max-label" style="font-size:0.75rem;color:var(--text-dim);"></div>
+      <div style="font-size:0.82rem;color:var(--text-dim);margin-top:4px;font-weight:600;" id="qty-price-info"></div>
+    </div>
+    <button class="btn btn-primary" id="qty-confirm" style="width:100%;justify-content:center;">🛒 Dodaj do koszyka</button>
+    <button class="modal-close" id="close-qty">Anuluj</button>
+  </div>
+</div>
+
+<!-- UPSELL MODAL -->
+<div class="modal-overlay" id="upsell-overlay">
+  <div class="modal" style="max-width:460px">
+    <h3>🎁 Specjalna oferta dla Ciebie!</h3>
+    <p class="sub">Dobierz coś ekstra w super cenie — tylko teraz, z rabatem 10%!</p>
+    <div id="upsell-cards"></div>
+    <button class="btn btn-yellow" id="upsell-accept" style="display:none;width:100%;justify-content:center;">✅ Dodaj zaznaczoną ofertę</button>
+    <button class="upsell-no-thanks" id="upsell-skip">Nie, dziękuję — przejdź do koszyka</button>
+  </div>
+</div>
+
+<!-- CART / PODSUMOWANIE -->
+<div class="modal-overlay" id="cart-overlay">
+  <div class="modal" style="max-width:480px">
+    <h3>🛒 Podsumowanie zamówienia</h3>
+    <p class="sub">Sprawdź zamówienie przed płatnością.</p>
+    <div class="cart-summary" id="cart-lines"></div>
+    <div class="cart-total-row">
+      <div class="total-label">Razem do zapłaty:</div>
+      <div class="total-price" id="cart-grand-total">0 zł</div>
+    </div>
+    <button class="btn btn-primary" id="pay-btn" style="width:100%;justify-content:center;margin-top:18px;">💳 Przejdź do płatności LTC</button>
+    <button class="btn btn-secondary" id="cart-add-more-btn" style="width:100%;justify-content:center;margin-top:10px;">➕ Dodaj więcej pullek</button>
+    <button class="modal-close" id="close-cart">Wróć do ofert</button>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payment-overlay">
+  <div class="modal" style="max-width:480px">
+    <h3>💎 Płatność w Litecoin (LTC)</h3>
+    <p class="sub">Wyślij dokładnie tę kwotę na podany adres.</p>
+
+    <div class="payment-box">
+      <div class="ltc-amount-sub">Kwota do zapłaty</div>
+      <div class="ltc-amount-big" id="pay-ltc-amount">ładowanie…</div>
+      <div class="ltc-amount-sub" id="pay-pln-equiv"></div>
+      <div class="rate-info" id="pay-rate-info"></div>
+    </div>
+
+    <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:8px;font-weight:600;">Adres LTC (kliknij aby skopiować):</div>
+    <div class="ltc-address-box" id="pay-address" onclick="copyAddress()">
+      LVieH7KeRB6CG6ya7nEpGFqc5quq61VCtV
+    </div>
+    <div class="copy-hint" id="copy-hint">📋 Kliknij adres aby skopiować</div>
+
+    <div style="font-size:0.75rem;color:rgba(201,184,222,0.5);margin-top:8px;text-align:center;">
+      ⚠️ Tolerancja ±0,30 zł — możesz przelać o tyle więcej lub mniej.
+    </div>
+
+    <div class="payment-status waiting" id="payment-status">
+      <span class="spinner"></span> Oczekiwanie na płatność…
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-dim);text-align:center;margin-top:6px;">
+      Sprawdzamy płatność co minutę — to normalne, że status zmienia się z opóźnieniem.
+    </div>
+
+    <div style="text-align:center;margin-top:12px;">
+      <div style="font-size:0.82rem;color:var(--text-dim);margin-bottom:8px;">Potwierdzenia sieci (wymagane: 1)</div>
+      <div class="confirm-dots">
+        <div class="confirm-dot" id="dot-1"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" id="test-skip-payment-btn" style="width:100%;justify-content:center;margin-top:16px;border-color:#FF9E9E;color:#FF9E9E;">🧪 TEST: pomiń płatność</button>
+    <button class="btn btn-green" id="bots-btn" style="width:100%;justify-content:center;margin-top:12px;display:none;">🤖 Dodaj boty do pullki</button>
+    <button class="modal-close" id="close-payment">Anuluj płatność</button>
+  </div>
+</div>
+
+<!-- BOTS MODAL -->
+<div class="modal-overlay" id="bots-overlay">
+  <div class="modal" style="max-width:500px">
+    <h3>✅ Płatność potwierdzona!</h3>
+    <p class="sub">Dla każdej zakupionej pullki wpisz ID swojego serwera Discord i kliknij przycisk, aby nadać backup.</p>
+    <div id="bots-lines"></div>
+    <button class="modal-close" id="close-bots">Zamknij</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'sweet-pull-pricing-v5';
+const UPSELL_KEY  = 'sweet-pull-upsells-v1';
+const CATEGORIES = ['Shop','Exchange','Inne'];
+const LTC_ADDRESS = 'LVieH7KeRB6CG6ya7nEpGFqc5quq61VCtV';
+
+let items = [], upsells = [], selectedCategory = CATEGORIES[0];
+let cartLines = []; // [{lineId, item, qty, upsell}]
+let paidLines = []; // snapshot linii opłaconych w aktualnej płatności
+let paymentInterval = null;
+let paymentSince = null;
+let paymentLtc = null;
+let paymentToleranceLtc = null;
+let currentItem = null, currentQty = 1;
+let pullPollIntervals = {};
+
+function uid(){ return 'p'+Math.random().toString(36).slice(2,9); }
+
+function formatPLN(pln){ return pln.toFixed(2).replace('.',',') + ' zł'; }
+function priceForQty(pricePer100, qty){ return (pricePer100 * qty) / 100; }
+
+/* =========== STORAGE =========== */
+async function loadData(){
+  try{
+    const r1 = await window.storage.get(STORAGE_KEY,true);
+    items = r1 ? JSON.parse(r1.value) : getDefaultItems();
+    if(!r1) await saveItems();
+  }catch(e){ items = getDefaultItems(); }
+  try{
+    const r2 = await window.storage.get(UPSELL_KEY,true);
+    upsells = r2 ? JSON.parse(r2.value) : [];
+  }catch(e){ upsells=[]; }
+  renderPricing();
+}
+function getDefaultItems(){ return []; }
+async function saveItems(){
+  try{ await window.storage.set(STORAGE_KEY,JSON.stringify(items),true); return true; }
+  catch(e){ return false; }
+}
+async function saveUpsells(){
+  try{ await window.storage.set(UPSELL_KEY,JSON.stringify(upsells),true); return true; }
+  catch(e){ return false; }
+}
+
+/* =========== PRICING =========== */
+function renderPricing(){
+  const pillsWrap = document.getElementById('category-pills');
+  const detailWrap = document.getElementById('pricing-detail');
+  pillsWrap.innerHTML = CATEGORIES.map(cat=>
+    `<button class="category-pill ${cat===selectedCategory?'active':''}" data-cat="${cat}">${cat}</button>`
+  ).join('');
+  pillsWrap.querySelectorAll('.category-pill').forEach(btn=>{
+    btn.addEventListener('click',()=>{ selectedCategory=btn.dataset.cat; renderPricing(); });
+  });
+  const filtered = items.filter(i=>i.category===selectedCategory).sort((a,b)=>a.price-b.price);
+  if(!filtered.length){
+    detailWrap.innerHTML='<p class="empty-pricing">Brak ofert w tej kategorii.</p>';
+  } else {
+    detailWrap.innerHTML = `<div class="offers-grid">${filtered.map(item=>{
+      const perPerson = (item.price/100).toFixed(2).replace('.',',');
+      return `<div class="price-card" data-id="${item.id}">
+        <button class="admin-del" data-id="${item.id}">Usuń</button>
+        <div class="offer-category-tag">${item.category}</div>
+        <h3>${item.name}</h3>
+        <div class="price-per">cena za osobę</div>
+        <div class="price">${perPerson} <span>zł</span></div>
+        <div class="people">👥 Max osób: ${item.people}</div>
+        <button class="btn btn-primary add-cart-btn" data-id="${item.id}">🛒 Dodaj do koszyka</button>
+      </div>`;
+    }).join('')}</div>`;
+    detailWrap.querySelectorAll('.admin-del').forEach(btn=>{
+      btn.addEventListener('click',async e=>{
+        items=items.filter(i=>i.id!==e.currentTarget.dataset.id);
+        await saveItems(); renderPricing();
+      });
+    });
+    detailWrap.querySelectorAll('.add-cart-btn').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        const item=items.find(i=>i.id===e.currentTarget.dataset.id);
+        if(item) openQtyModal(item);
+      });
+    });
+  }
+  renderAdminList();
+}
+
+/* =========== QTY MODAL =========== */
+function openQtyModal(item){
+  currentItem=item; currentQty=1;
+  document.getElementById('qty-title').textContent=item.name;
+  document.getElementById('qty-sub').textContent=`Kategoria: ${item.category}`;
+  document.getElementById('qty-max-label').textContent=`Maksymalnie: ${item.people} osób`;
+  const presets=document.getElementById('qty-presets');
+  const vals=[1,10,25,50,100,250,500,1000].filter(v=>v<=item.people);
+  if(!vals.includes(item.people)) vals.push(item.people);
+  presets.innerHTML=vals.map(v=>`<button class="qty-preset" data-v="${v}">${v===item.people?v+' (max)':v}</button>`).join('');
+  presets.querySelectorAll('.qty-preset').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      currentQty=parseInt(btn.dataset.v);
+      document.getElementById('qty-num').value=currentQty;
+      updateQtyDisplay(false);
+    });
+  });
+  document.getElementById('qty-num').value=1;
+  updateQtyDisplay(false);
+  document.getElementById('qty-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('qty-num').select(),100);
+}
+function clampQty(v){ return Math.max(1,Math.min(currentItem.people,Math.floor(v)||1)); }
+function updateQtyDisplay(fromInput){
+  const inp=document.getElementById('qty-num');
+  const raw=parseInt(inp.value)||0;
+  if(fromInput){
+    const over=raw>currentItem.people, under=raw<1&&inp.value!=='';
+    inp.style.borderColor=(over||under)?'#FF9E9E':'';
+    inp.style.color=(over||under)?'#FF9E9E':'';
+    currentQty=clampQty(raw);
+  } else {
+    inp.value=currentQty; inp.style.borderColor=''; inp.style.color='';
+  }
+  const total=priceForQty(currentItem.price,currentQty);
+  document.getElementById('qty-price-info').textContent=
+    currentQty>0?`Cena za ${currentQty} os.: ${formatPLN(total)}`:'';
+  document.getElementById('qty-minus').disabled=currentQty<=1;
+  document.getElementById('qty-plus').disabled=currentQty>=currentItem.people;
+}
+document.getElementById('qty-num').addEventListener('input',()=>updateQtyDisplay(true));
+document.getElementById('qty-num').addEventListener('blur',()=>{
+  currentQty=clampQty(parseInt(document.getElementById('qty-num').value)||1);
+  updateQtyDisplay(false);
+});
+document.getElementById('qty-num').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){ currentQty=clampQty(parseInt(document.getElementById('qty-num').value)||1); updateQtyDisplay(false); document.getElementById('qty-confirm').click(); }
+});
+let holdInterval=null;
+function startHold(dir){ const step=()=>{ currentQty=clampQty(currentQty+dir); updateQtyDisplay(false); }; step(); holdInterval=setTimeout(()=>{ holdInterval=setInterval(step,80); },400); }
+function stopHold(){ clearTimeout(holdInterval); clearInterval(holdInterval); holdInterval=null; }
+['mousedown','touchstart'].forEach(ev=>{ document.getElementById('qty-minus').addEventListener(ev,e=>{e.preventDefault();startHold(-1);}); document.getElementById('qty-plus').addEventListener(ev,e=>{e.preventDefault();startHold(1);}); });
+['mouseup','mouseleave','touchend','touchcancel'].forEach(ev=>{ document.getElementById('qty-minus').addEventListener(ev,stopHold); document.getElementById('qty-plus').addEventListener(ev,stopHold); });
+document.getElementById('close-qty').addEventListener('click',()=>document.getElementById('qty-overlay').classList.remove('open'));
+document.getElementById('qty-confirm').addEventListener('click',()=>{
+  const lineId=uid();
+  cartLines.push({lineId,item:currentItem,qty:currentQty,upsell:null});
+  document.getElementById('qty-overlay').classList.remove('open');
+  updateCartBadge();
+  const relevant=getRelevantUpsells(currentItem);
+  if(relevant.length>0) openUpsellModal(lineId,relevant);
+  else openCartModal();
+});
+
+/* =========== CART BADGE / NAV BUTTON =========== */
+function updateCartBadge(){
+  const badge=document.getElementById('cart-badge');
+  badge.textContent=cartLines.length;
+  badge.className=cartLines.length>0?'cart-badge':'cart-badge empty';
+}
+document.getElementById('open-cart-nav-btn').addEventListener('click',openCartModal);
+
+/* =========== UPSELL =========== */
+function getRelevantUpsells(item){ return upsells.filter(u=>u.categories.includes(item.category)); }
+function openUpsellModal(lineId,relevant){
+  const line=cartLines.find(l=>l.lineId===lineId);
+  const wrap=document.getElementById('upsell-cards');
+  let selectedUpsell=null;
+  const shown=relevant.slice(0,3);
+  wrap.innerHTML=shown.map((u,i)=>{
+    const orig=priceForQty(u.price,line.qty).toFixed(2).replace('.',',');
+    const disc=priceForQty(u.price*0.9,line.qty).toFixed(2).replace('.',',');
+    return `<div class="upsell-offer-card" data-idx="${i}">
+      <div class="upsell-badge">−10%</div>
+      <div class="upsell-name">${u.name}</div>
+      ${u.desc?`<div class="upsell-desc">${u.desc}</div>`:''}
+      <div style="margin-top:10px"><span class="upsell-original">${orig} zł</span> &nbsp;→&nbsp; <span class="upsell-discounted">${disc} zł</span></div>
+    </div>`;
+  }).join('');
+  const acceptBtn=document.getElementById('upsell-accept');
+  acceptBtn.style.display='none';
+  wrap.querySelectorAll('.upsell-offer-card').forEach((card,i)=>{
+    card.addEventListener('click',()=>{
+      wrap.querySelectorAll('.upsell-offer-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected'); selectedUpsell=shown[i]; acceptBtn.style.display='block';
+    });
+  });
+  acceptBtn.onclick=()=>{ line.upsell=selectedUpsell; document.getElementById('upsell-overlay').classList.remove('open'); openCartModal(); };
+  document.getElementById('upsell-overlay').classList.add('open');
+  document.getElementById('upsell-skip').onclick=()=>{ document.getElementById('upsell-overlay').classList.remove('open'); openCartModal(); };
+}
+
+/* =========== CART MODAL =========== */
+function lineMainTotal(line){ return priceForQty(line.item.price,line.qty); }
+function lineUpsellTotal(line){ return line.upsell?priceForQty(line.upsell.price*0.9,line.qty):0; }
+function cartGrandTotal(){ return cartLines.reduce((sum,line)=>sum+lineMainTotal(line)+lineUpsellTotal(line),0); }
+function openCartModal(){
+  renderCartLines();
+  document.getElementById('cart-overlay').classList.add('open');
+}
+function renderCartLines(){
+  const wrap=document.getElementById('cart-lines');
+  const payBtn=document.getElementById('pay-btn');
+  if(!cartLines.length){
+    wrap.innerHTML='<p style="color:var(--text-dim);font-size:0.9rem;text-align:center;padding:6px 0;">Koszyk jest pusty. Wybierz pullkę z cennika 👇</p>';
+    document.getElementById('cart-grand-total').textContent=formatPLN(0);
+    payBtn.disabled=true;
+    return;
+  }
+  payBtn.disabled=false;
+  let html='';
+  cartLines.forEach(line=>{
+    html+=`<div class="cart-line">
+      <span class="line-name">${line.item.name} × ${line.qty} os.</span>
+      <span style="display:flex;align-items:center;gap:10px;">
+        <span class="line-price">${formatPLN(lineMainTotal(line))}</span>
+        <button class="cart-line-remove" data-line="${line.lineId}" title="Usuń pozycję">✕</button>
+      </span>
+    </div>`;
+    if(line.upsell){
+      const disc=lineUpsellTotal(line);
+      const saved=priceForQty(line.upsell.price,line.qty)-disc;
+      html+=`<div class="cart-line"><span class="line-name">↳ ${line.upsell.name} × ${line.qty} os.</span><span class="line-price">${formatPLN(disc)}</span></div>`;
+      html+=`<div class="cart-line discount"><span class="line-name">↳ 💚 Zniżka 10%</span><span class="line-price">−${formatPLN(saved)}</span></div>`;
+    }
+  });
+  wrap.innerHTML=html;
+  document.getElementById('cart-grand-total').textContent=formatPLN(cartGrandTotal());
+  wrap.querySelectorAll('.cart-line-remove').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      cartLines=cartLines.filter(l=>l.lineId!==e.currentTarget.dataset.line);
+      updateCartBadge();
+      renderCartLines();
+    });
+  });
+}
+document.getElementById('close-cart').addEventListener('click',()=>document.getElementById('cart-overlay').classList.remove('open'));
+document.getElementById('cart-add-more-btn').addEventListener('click',()=>{
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cennik').scrollIntoView({behavior:'smooth'});
+});
+
+/* =========== PAYMENT =========== */
+document.getElementById('pay-btn').addEventListener('click',async ()=>{
+  if(!cartLines.length) return;
+  paidLines=cartLines.map(l=>({...l}));
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('payment-overlay').classList.add('open');
+  document.getElementById('pay-ltc-amount').textContent='⏳ Pobieranie kursu…';
+  document.getElementById('pay-pln-equiv').textContent='';
+  document.getElementById('pay-rate-info').textContent='';
+  document.getElementById('payment-status').className='payment-status waiting';
+  document.getElementById('payment-status').innerHTML='<span class="spinner"></span> Oczekiwanie na płatność…';
+  document.getElementById('dot-1').className='confirm-dot';
+  document.getElementById('bots-btn').style.display='none';
+
+  const totalPLN=cartGrandTotal();
+
+  try{
+    const res=await fetch(`/api/ltc-rate?pln=${totalPLN.toFixed(2)}`);
+    const data=await res.json();
+    if(data.error){ throw new Error(data.error); }
+
+    paymentLtc=data.ltcAmount;
+    paymentToleranceLtc=data.toleranceLtc;
+    paymentSince=Math.floor(Date.now()/1000);
+
+    document.getElementById('pay-ltc-amount').textContent=`${data.ltcAmount.toFixed(6)} LTC`;
+    document.getElementById('pay-pln-equiv').textContent=`= ${formatPLN(totalPLN)}`;
+    document.getElementById('pay-rate-info').textContent=`Kurs: 1 LTC = ${data.ltcPln.toFixed(2).replace('.',',')} PLN`;
+
+    startPaymentPolling();
+  } catch(e){
+    document.getElementById('pay-ltc-amount').textContent='Błąd pobierania kursu';
+    document.getElementById('payment-status').innerHTML='❌ ' + e.message;
+    document.getElementById('payment-status').className='payment-status waiting';
+  }
+});
+
+function startPaymentPolling(){
+  if(paymentInterval) clearInterval(paymentInterval);
+  paymentInterval=setInterval(checkPayment,60000); // co 60 sekund — oszczędza limit zapytań
+  checkPayment();
+}
+
+async function checkPayment(){
+  try{
+    const res=await fetch(
+      `/api/check-payment?ltcAmount=${paymentLtc}&toleranceLtc=${paymentToleranceLtc}&since=${paymentSince}`
+    );
+    const data=await res.json();
+
+    if(data.status==='confirmed'){
+      clearInterval(paymentInterval);
+      document.getElementById('dot-1').className='confirm-dot done';
+      document.getElementById('payment-status').className='payment-status confirmed';
+      document.getElementById('payment-status').innerHTML='✅ Płatność potwierdzona! Możesz teraz dodać boty.';
+      document.getElementById('bots-btn').style.display='block';
+      cartLines=[]; updateCartBadge();
+    } else if(data.status==='pending'){
+      document.getElementById('dot-1').className='confirm-dot';
+      document.getElementById('payment-status').className='payment-status pending';
+      document.getElementById('payment-status').innerHTML='<span class="spinner"></span> Transakcja wykryta — oczekiwanie na potwierdzenie…';
+    } else {
+      document.getElementById('payment-status').className='payment-status waiting';
+      document.getElementById('payment-status').innerHTML='<span class="spinner"></span> Oczekiwanie na płatność…';
+    }
+  } catch(e){ /* cicho ignoruj błędy sieci */ }
+}
+
+document.getElementById('close-payment').addEventListener('click',()=>{
+  clearInterval(paymentInterval);
+  document.getElementById('payment-overlay').classList.remove('open');
+});
+
+document.getElementById('bots-btn').addEventListener('click',openBotsModal);
+
+// =========== PRZYCISK TESTOWY — NIE USUWAĆ bez wyraźnej zgody (instrukcja: "nie usuwaj dopóki nie napiszę") ===========
+document.getElementById('test-skip-payment-btn').addEventListener('click',()=>{
+  if(paymentInterval) clearInterval(paymentInterval);
+  document.getElementById('dot-1').className='confirm-dot done';
+  document.getElementById('payment-status').className='payment-status confirmed';
+  document.getElementById('payment-status').innerHTML='✅ [TEST] Płatność pominięta — to NIE była prawdziwa transakcja.';
+  document.getElementById('bots-btn').style.display='block';
+  cartLines=[]; updateCartBadge();
+});
+
+function copyAddress(){
+  navigator.clipboard.writeText(LTC_ADDRESS).then(()=>{
+    const hint=document.getElementById('copy-hint');
+    hint.textContent='✅ Skopiowano!'; hint.className='copy-hint copied';
+    setTimeout(()=>{ hint.textContent='📋 Kliknij adres aby skopiować'; hint.className='copy-hint'; },2000);
+  }).catch(()=>{
+    // fallback
+    const el=document.createElement('textarea');
+    el.value=LTC_ADDRESS; document.body.appendChild(el);
+    el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    document.getElementById('copy-hint').textContent='✅ Skopiowano!';
+  });
+}
+
+/* =========== BOTS MODAL =========== */
+function openBotsModal(){
+  document.getElementById('payment-overlay').classList.remove('open');
+  stopAllPullPolling();
+  const wrap=document.getElementById('bots-lines');
+  wrap.innerHTML=paidLines.map(line=>{
+    const item=line.item;
+    const isRC=item.provider==='restorecord';
+    const hasBackup=isRC?(item.rcKeyName&&item.rcServerId):item.vaultcordServerId;
+    if(!hasBackup){
+      return `<div class="server-id-box" style="margin-top:14px;">
+        <label>${item.name} × ${line.qty} os.</label>
+        <div class="status-msg error">Ta pullka nie ma skonfigurowanego backupu. Skontaktuj się z obsługą.</div>
+      </div>`;
+    }
+    const roleField=isRC?`
+      <div style="margin-top:10px;">
+        <label style="font-size:0.82rem;color:var(--text-dim);">ID roli do nadania (opcjonalnie — zostaw puste jeśli nie chcesz nadawać roli):</label>
+        <input type="text" id="role-input-${line.lineId}" placeholder="np. 987654321098765432" style="margin-top:6px;">
+      </div>`:'';
+    return `<div class="server-id-box" id="card-${line.lineId}" style="margin-top:14px;">
+      <label>${item.name} × ${line.qty} os. — wpisz ID swojego serwera Discord:</label>
+      <input type="text" id="server-input-${line.lineId}" placeholder="np. 123456789012345678">
+      ${roleField}
+      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">
+        Jak znaleźć ID serwera? Włącz Tryb dewelopera w ustawieniach Discord → kliknij prawym na serwer → Kopiuj ID
+      </div>
+      <button class="btn btn-green line-pull-btn" data-line="${line.lineId}" style="width:100%;justify-content:center;margin-top:12px;">✅ Dodałem boty</button>
+      <div class="status-msg" id="status-${line.lineId}"></div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.line-pull-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const lineId=btn.dataset.line;
+      const line=paidLines.find(l=>l.lineId===lineId);
+      triggerPull(lineId,line.item,line.qty);
+    });
+  });
+  document.getElementById('bots-overlay').classList.add('open');
+}
+
+async function triggerPull(lineId,item,qty){
+  const input=document.getElementById('server-input-'+lineId);
+  const status=document.getElementById('status-'+lineId);
+  const btn=document.querySelector(`.line-pull-btn[data-line="${lineId}"]`);
+  const guildId=input.value.trim();
+  if(!guildId){ status.textContent='Wpisz ID serwera Discord!'; status.className='status-msg error'; return; }
+  stopPullStatusPolling(lineId);
+  btn.disabled=true;
+
+  const isRC=item.provider==='restorecord';
+
+  // Komunikat i endpoint zależne od providera
+  status.innerHTML=`⏳ Wysyłanie żądania backupu do ${isRC?'RestoreCord':'VaultCord'}…`;
+  status.className='status-msg';
+
+  try{
+    let res, data;
+    if(isRC){
+      const roleInputEl=document.getElementById('role-input-'+lineId);
+      const roleId=roleInputEl?roleInputEl.value.trim():'';
+      res=await fetch('/api/restorecord-pull',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          rcKeyName:item.rcKeyName,
+          rcServerId:item.rcServerId,
+          targetGuildId:guildId,
+          selectedRoles:roleId?[roleId]:[],
+          customPullCount:qty,
+        })
+      });
+    } else {
+      res=await fetch('/api/vaultcord-pull',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ vaultcordServerId:item.vaultcordServerId, guildId, limit:qty })
+      });
+    }
+    data=await res.json();
+
+    if(res.ok && data.status==='ok'){
+      const eta=data.estimatedTime?` Szacowany czas: ${data.estimatedTime}.`:'';
+      status.innerHTML=`🚀 Backup nadany! Osoby zaczną zaraz dołączać do Twojego serwera.${eta}<br><small style="color:var(--text-dim);">Jeśli nie otrzymasz co najmniej <strong>${Math.round(qty*0.7)}</strong> osób, zgłoś się na <a href="https://discord.gg/sweetpull" target="_blank" rel="noopener" style="color:var(--mint)">nasz Discord</a>.</small>`;
+      status.className='status-msg';
+      btn.textContent='✅ Backup nadany';
+      const migrationId=data.migrationId||null;
+      startPullStatusPolling(lineId,item,qty,migrationId);
+    } else {
+      status.innerHTML='❌ '+(data.error||'Nie udało się uruchomić backupu. Spróbuj ponownie.');
+      status.className='status-msg error';
+      btn.disabled=false;
+    }
+  } catch(e){
+    status.innerHTML='❌ Błąd połączenia z serwerem.';
+    status.className='status-msg error';
+    btn.disabled=false;
+  }
+}
+
+function stopPullStatusPolling(lineId){
+  if(pullPollIntervals[lineId]){ clearInterval(pullPollIntervals[lineId]); delete pullPollIntervals[lineId]; }
+}
+function stopAllPullPolling(){ Object.keys(pullPollIntervals).forEach(stopPullStatusPolling); }
+
+function startPullStatusPolling(lineId,item,qty,migrationId){
+  stopPullStatusPolling(lineId);
+  pullPollIntervals[lineId]=setInterval(()=>{
+    checkDelivery(lineId,item,qty,migrationId);
+  }, 30000);
+}
+
+async function checkDelivery(lineId,item,qty,migrationId){
+  const status=document.getElementById('status-'+lineId);
+  if(!status) return;
+  const isRC=item.provider==='restorecord';
+  const threshold=Math.round(qty*0.7);
+  const discordLink=`<a href="https://discord.gg/sweetpull" target="_blank" rel="noopener" style="color:var(--mint)">nasz Discord</a>`;
+  const belowThresholdMsg=(got,total)=>
+    `⚠️ Otrzymałeś mniej niż <strong>${threshold}</strong> osób (${got}/${total}). Zgłoś się na ${discordLink}.`;
+  const okMsg=(got,total)=>
+    `✅ Backup zrealizowany — ${got}/${total} osób dołączyło.<br><small style="color:var(--text-dim);">Jeśli coś się nie zgadza, napisz na ${discordLink}.</small>`;
+
+  try{
+    let got=null, total=null, done=false;
+    if(isRC){
+      const params=new URLSearchParams({rcKeyName:item.rcKeyName,rcServerId:item.rcServerId});
+      if(migrationId) params.set('migrationId',migrationId);
+      const res=await fetch('/api/restorecord-stats?'+params.toString());
+      const data=await res.json();
+      if(!res.ok||data.status!=='ok') return;
+      got=data.success; total=data.total||qty;
+      done=data.migrationStatus==='SUCCESS'||data.migrationStatus==='FAILED'||data.migrationStatus==='STOPPED';
+    } else {
+      const res=await fetch('/api/vaultcord-stats?vaultcordServerId='+encodeURIComponent(item.vaultcordServerId));
+      const data=await res.json();
+      if(!res.ok||data.status!=='ok') return;
+      const latest=data.pulls&&data.pulls.length?data.pulls[0]:null;
+      if(!latest) return;
+      got=latest.successCount; total=latest.totalCount||qty;
+      done=true; // VC nie ma statusu "w toku" w tym endpoincie
+    }
+    if(got==null) return;
+    if(got<threshold){
+      status.innerHTML=belowThresholdMsg(got,total);
+      status.className='status-msg error';
+    } else {
+      status.innerHTML=okMsg(got,total);
+      status.className='status-msg';
+    }
+    if(done) stopPullStatusPolling(lineId);
+  } catch(e){ /* cicho — spróbujemy za 30s */ }
+}
+
+document.getElementById('close-bots').addEventListener('click',()=>{ stopAllPullPolling(); document.getElementById('bots-overlay').classList.remove('open'); });
+
+/* =========== ADMIN =========== */
+function renderAdminList(){
+  const list=document.getElementById('admin-list');
+  if(!list) return;
+  if(!items.length){
+    list.innerHTML='<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px">Brak pullk.</p>';
+  } else {
+    list.innerHTML=items.map(item=>{
+      const perPerson=(item.price/100).toFixed(2).replace('.',',');
+      const botCount=(item.bots||[]).length;
+      const vaultId=item.vaultcordServerId?item.vaultcordServerId:'—';
+      const providerBadge=item.provider==='restorecord'
+        ? `🟠 RC: ${item.rcServerId||'—'} [${item.rcKeyName||'—'}]`
+        : `🔵 VC: ${vaultId}`;
+      return `<div class="admin-list-item">
+        <span>${item.name} <em style="color:var(--mint)">[${item.category}]</em> — ${perPerson} zł/os. — max ${item.people} os. — 🤖 ${botCount} bot${botCount===1?'':'ów'} — ${providerBadge}</span>
+        <button data-id="${item.id}">Usuń</button>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',async e=>{ items=items.filter(i=>i.id!==e.currentTarget.dataset.id); await saveItems(); renderPricing(); });
+    });
+  }
+  renderUpsellAdminList();
+}
+function renderUpsellAdminList(){
+  const list=document.getElementById('upsell-admin-list');
+  if(!list) return;
+  if(!upsells.length){ list.innerHTML='<p style="color:var(--text-dim);font-size:0.85rem;">Brak poleceń.</p>'; return; }
+  list.innerHTML=upsells.map(u=>{
+    const p=(u.price/100).toFixed(2).replace('.',',');
+    return `<div class="upsell-item">
+      <span>${u.name} — ${p} zł/os. → <strong style="color:var(--candy-yellow)">${(u.price*0.9/100).toFixed(2).replace('.',',')} zł/os.</strong> — kat: ${u.categories.join(', ')}</span>
+      <span class="upsell-tag">−10%</span>
+      <button data-id="${u.id}">Usuń</button>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click',async e=>{ upsells=upsells.filter(u=>u.id!==e.currentTarget.dataset.id); await saveUpsells(); renderAdminList(); });
+  });
+}
+
+function openAdminLogin(){
+  document.getElementById('login-overlay').classList.add('open');
+  document.getElementById('admin-pass').value='';
+  document.getElementById('login-status').textContent='';
+}
+// Panel admina: ukryty skrót Ctrl+Shift+A
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdminLogin(); }
+});
+document.getElementById('close-login').addEventListener('click',()=>document.getElementById('login-overlay').classList.remove('open'));
+document.getElementById('close-admin').addEventListener('click',()=>{ document.getElementById('admin-overlay').classList.remove('open'); document.body.classList.remove('admin-mode'); });
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const pass = document.getElementById('admin-pass').value;
+  const statusEl = document.getElementById('login-status');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  statusEl.textContent = '';
+  statusEl.className = 'status-msg';
+  try {
+    const res = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pass })
+    });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      document.getElementById('login-overlay').classList.remove('open');
+      document.getElementById('admin-overlay').classList.add('open');
+      document.body.classList.add('admin-mode');
+      renderAdminList();
+      loadVaultcordServersIntoSelect();
+      loadRcKeysIntoSelect();
+    } else {
+      statusEl.textContent = 'Błędne hasło.';
+      statusEl.className = 'status-msg error';
+    }
+  } catch(e) {
+    statusEl.textContent = 'Błąd połączenia z serwerem.';
+    statusEl.className = 'status-msg error';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function loadVaultcordServersIntoSelect(){
+  const sel=document.getElementById('f-vaultcord-id');
+  sel.innerHTML='<option value="">⏳ Wczytywanie serwerów z VaultCord…</option>';
+  try{
+    const res=await fetch('/api/vaultcord-servers');
+    const data=await res.json();
+    if(res.ok && data.status==='ok' && data.servers.length){
+      sel.innerHTML='<option value="">— wybierz serwer —</option>'+
+        data.servers.map(s=>`<option value="${s.id}">${s.name}${s.guildId?` (Discord ID: ${s.guildId})`:''}</option>`).join('');
+    } else if(res.ok && data.status==='ok'){
+      sel.innerHTML='<option value="">Brak podłączonych serwerów na koncie VaultCord</option>';
+    } else {
+      sel.innerHTML=`<option value="">❌ Błąd wczytywania: ${(data.error||'nieznany błąd').slice(0,80)}</option>`;
+    }
+  } catch(e){
+    sel.innerHTML='<option value="">❌ Błąd połączenia z funkcją vaultcord-servers</option>';
+  }
+}
+
+async function loadRcKeysIntoSelect(){
+  const sel=document.getElementById('f-rc-key');
+  sel.innerHTML='<option value="">⏳ Wczytuję dostępne klucze RC…</option>';
+  try{
+    const res=await fetch('/api/restorecord-keys');
+    const data=await res.json();
+    if(res.ok && data.status==='ok' && data.keys.length){
+      sel.innerHTML='<option value="">— wybierz konto —</option>'+
+        data.keys.map(k=>`<option value="${k}">${k.replace('RC_KEY_','')}</option>`).join('');
+    } else {
+      sel.innerHTML='<option value="">Brak kluczy RC_KEY_* w Vercel — dodaj zmienną np. RC_KEY_SWEETPULL</option>';
+    }
+  } catch(e){
+    sel.innerHTML='<option value="">❌ Błąd wczytywania kluczy RC</option>';
+  }
+}
+document.getElementById('admin-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('login-btn').click(); });
+
+document.getElementById('f-provider').addEventListener('change',function(){
+  const isRC=this.value==='restorecord';
+  document.getElementById('f-vc-fields').style.display=isRC?'none':'block';
+  document.getElementById('f-rc-fields').style.display=isRC?'block':'none';
+});
+
+document.getElementById('add-item-btn').addEventListener('click',async()=>{
+  const name=document.getElementById('f-name').value.trim();
+  const category=document.getElementById('f-cat').value;
+  const price=parseFloat(document.getElementById('f-price').value);
+  const people=parseInt(document.getElementById('f-people').value,10);
+  const botsRaw=document.getElementById('f-bots').value.trim();
+  const provider=document.getElementById('f-provider').value;
+  const status=document.getElementById('admin-status');
+  if(!name||isNaN(price)||price<0||isNaN(people)||people<1){
+    status.textContent='Podaj nazwę, cenę i ilość osób.'; status.className='status-msg error'; return;
+  }
+  const bots=botsRaw.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+    const sep=l.indexOf('|');
+    if(sep<0) return {name:l,url:l};
+    return {name:l.slice(0,sep).trim(), url:l.slice(sep+1).trim()};
+  });
+  let itemData={id:uid(),name,category,price,people,bots,provider};
+  if(provider==='restorecord'){
+    const rcKeyName=document.getElementById('f-rc-key').value.trim();
+    const rcServerId=document.getElementById('f-rc-server-id').value.trim();
+    if(!rcKeyName||!rcServerId){
+      status.textContent='Wybierz konto RC i podaj ID serwera RestoreCord.'; status.className='status-msg error'; return;
+    }
+    itemData={...itemData,rcKeyName,rcServerId,vaultcordServerId:''};
+  } else {
+    const vaultcordServerId=document.getElementById('f-vaultcord-id').value.trim();
+    itemData={...itemData,vaultcordServerId,rcKeyName:'',rcServerId:''};
+  }
+  items.push(itemData);
+  selectedCategory=category;
+  const ok=await saveItems(); renderPricing();
+  document.getElementById('f-name').value='';
+  document.getElementById('f-price').value='';
+  document.getElementById('f-people').value='';
+  document.getElementById('f-bots').value='';
+  document.getElementById('f-vaultcord-id').value='';
+  document.getElementById('f-rc-server-id').value='';
+  document.getElementById('f-rc-key').value='';
+  status.textContent=ok?`Dodano "${name}".`:'Dodano lokalnie, zapis nie powiódł się.';
+  status.className=ok?'status-msg':'status-msg error';
+});
+
+document.getElementById('add-upsell-btn').addEventListener('click',async()=>{
+  const name=document.getElementById('u-name').value.trim();
+  const priceVal=parseFloat(document.getElementById('u-price').value);
+  const desc=document.getElementById('u-desc').value.trim();
+  const categories=Array.from(document.getElementById('u-cat').selectedOptions).map(o=>o.value);
+  const status=document.getElementById('upsell-status');
+  if(!name||isNaN(priceVal)||priceVal<0||!categories.length){
+    status.textContent='Podaj nazwę, cenę i wybierz kategorię.'; status.className='status-msg error'; return;
+  }
+  upsells.push({id:uid(),name,price:priceVal,categories,desc});
+  const ok=await saveUpsells(); renderUpsellAdminList();
+  document.getElementById('u-name').value='';
+  document.getElementById('u-price').value='';
+  document.getElementById('u-desc').value='';
+  status.textContent=ok?`Dodano polecanie "${name}".`:'Dodano lokalnie, zapis nie powiódł się.';
+  status.className=ok?'status-msg':'status-msg error';
+});
+
+loadData();
+</script>
+</body>
+</html>
