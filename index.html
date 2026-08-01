@@ -201,6 +201,20 @@
   .server-id-box label{display:block;font-size:0.82rem;color:var(--text-dim);margin-bottom:8px;font-weight:600;}
   .server-id-box input{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:var(--bg);color:var(--cream);font-family:'Quicksand';font-size:0.95rem;outline:none;}
   .server-id-box input:focus{outline:2px solid var(--mint);}
+  .bot-links-section{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+  .bot-link-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:10px;padding:10px 14px;border:1px solid rgba(255,255,255,0.07);}
+  .bot-link-row span{font-size:0.88rem;color:var(--cream);}
+  .bot-link-row a{background:var(--mint);color:var(--bg);font-family:'Baloo 2';font-weight:700;font-size:0.82rem;padding:6px 14px;border-radius:8px;text-decoration:none;white-space:nowrap;}
+  .bot-link-row a:hover{background:var(--candy-yellow);}
+  .tutorial-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;margin-top:10px;}
+  .tutorial-toggle{width:100%;background:none;border:none;color:var(--mint);font-family:'Quicksand';font-weight:700;font-size:0.85rem;padding:10px 14px;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;}
+  .tutorial-toggle:hover{background:rgba(255,255,255,0.04);}
+  .tutorial-content{display:none;padding:12px 14px;font-size:0.82rem;color:var(--text-dim);line-height:1.7;}
+  .tutorial-content.open{display:block;}
+  .tutorial-content strong{color:var(--cream);}
+  .tutorial-content ol{padding-left:18px;margin:6px 0 0;}
+  .btn-continue{background:var(--candy-pink);color:var(--bg);font-family:'Baloo 2';font-weight:800;font-size:1rem;border:none;border-radius:12px;padding:14px 20px;width:100%;cursor:pointer;margin-top:14px;transition:transform .15s,background .15s;}
+  .btn-continue:hover{background:#ff5fb3;transform:translateY(-2px);}
   .vc-stats-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:14px;border:1px solid rgba(111,231,199,0.25);}
   .vc-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
   .vc-stat{background:var(--bg-alt-2);border-radius:10px;padding:10px 12px;text-align:center;}
@@ -450,9 +464,9 @@
 
 <!-- BOTS MODAL -->
 <div class="modal-overlay" id="bots-overlay">
-  <div class="modal" style="max-width:500px">
+  <div class="modal" style="max-width:520px">
     <h3>✅ Płatność potwierdzona!</h3>
-    <p class="sub">Dla każdej zakupionej pullki wpisz ID swojego serwera Discord i kliknij przycisk, aby nadać backup.</p>
+    <p class="sub">Dodaj boty na swój serwer klikając poniższe linki, a następnie wpisz dane i nadaj backup.</p>
     <div id="bots-lines"></div>
     <button class="modal-close" id="close-bots">Zamknij</button>
   </div>
@@ -800,7 +814,23 @@ function openBotsModal(){
   document.getElementById('payment-overlay').classList.remove('open');
   stopAllPullPolling();
   const wrap=document.getElementById('bots-lines');
-  wrap.innerHTML=paidLines.map(line=>{
+
+  // Zbieramy wszystkie boty ze wszystkich linii (unikalne po URL)
+  const allBots=[];
+  const seenUrls=new Set();
+  paidLines.forEach(line=>{
+    (line.item.bots||[]).forEach(b=>{
+      if(!seenUrls.has(b.url)){ seenUrls.add(b.url); allBots.push(b); }
+    });
+  });
+
+  const botLinksHtml=allBots.length?`
+    <div class="bot-links-section">
+      ${allBots.map(b=>`<div class="bot-link-row"><span>🤖 ${b.name}</span><a href="${b.url}" target="_blank" rel="noopener">Dodaj bota →</a></div>`).join('')}
+    </div>`
+    :'<p class="sub" style="margin-top:10px;color:var(--text-dim);">Ta pullka nie ma przypisanych botów do dodania.</p>';
+
+  const pullCardsHtml=paidLines.map(line=>{
     const item=line.item;
     const isRC=item.provider==='restorecord';
     const hasBackup=isRC?(item.rcKeyName&&item.rcServerId):item.vaultcordServerId;
@@ -810,22 +840,62 @@ function openBotsModal(){
         <div class="status-msg error">Ta pullka nie ma skonfigurowanego backupu. Skontaktuj się z obsługą.</div>
       </div>`;
     }
-    const roleField=isRC?`
+    const roleField=`
+      <div style="margin-top:12px;">
+        <label style="font-size:0.85rem;font-weight:600;color:var(--cream);display:block;margin-bottom:6px;">ID roli do nadania <span style="color:var(--text-dim);font-weight:400;">(opcjonalne)</span></label>
+        <input type="text" id="role-input-${line.lineId}" placeholder="np. 987654321098765432">
+      </div>`;
+    return `<div class="server-id-box" style="margin-top:16px;">
+      <label style="font-weight:700;font-size:0.95rem;">${item.name} × ${line.qty} os.</label>
       <div style="margin-top:10px;">
-        <label style="font-size:0.82rem;color:var(--text-dim);">ID roli do nadania (opcjonalnie — zostaw puste jeśli nie chcesz nadawać roli):</label>
-        <input type="text" id="role-input-${line.lineId}" placeholder="np. 987654321098765432" style="margin-top:6px;">
-      </div>`:'';
-    return `<div class="server-id-box" id="card-${line.lineId}" style="margin-top:14px;">
-      <label>${item.name} × ${line.qty} os. — wpisz ID swojego serwera Discord:</label>
-      <input type="text" id="server-input-${line.lineId}" placeholder="np. 123456789012345678">
-      ${roleField}
-      <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">
-        Jak znaleźć ID serwera? Włącz Tryb dewelopera w ustawieniach Discord → kliknij prawym na serwer → Kopiuj ID
+        <label style="font-size:0.85rem;font-weight:600;color:var(--cream);display:block;margin-bottom:6px;">ID Twojego serwera Discord</label>
+        <input type="text" id="server-input-${line.lineId}" placeholder="np. 123456789012345678">
       </div>
-      <button class="btn btn-green line-pull-btn" data-line="${line.lineId}" style="width:100%;justify-content:center;margin-top:12px;">✅ Dodałem boty</button>
-      <div class="status-msg" id="status-${line.lineId}"></div>
+      ${roleField}
+      <div class="tutorial-box" style="margin-top:12px;">
+        <button class="tutorial-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.tut-arrow').textContent=this.nextElementSibling.classList.contains('open')?'▲':'▼'">
+          📖 Jak to skonfigurować? <span class="tut-arrow">▼</span>
+        </button>
+        <div class="tutorial-content">
+          <strong>Jak znaleźć ID serwera Discord:</strong>
+          <ol>
+            <li>Otwórz Discord → Ustawienia → Zaawansowane → włącz <strong>Tryb dewelopera</strong></li>
+            <li>Kliknij <strong>prawym przyciskiem myszy</strong> na ikonę swojego serwera</li>
+            <li>Wybierz <strong>Kopiuj ID serwera</strong> i wklej powyżej</li>
+          </ol>
+          <strong style="display:block;margin-top:10px;">Jak znaleźć ID roli:</strong>
+          <ol>
+            <li>Wejdź w <strong>Ustawienia serwera → Role</strong></li>
+            <li>Kliknij prawym na wybraną rolę → <strong>Kopiuj ID roli</strong></li>
+          </ol>
+          <strong style="display:block;margin-top:10px;">Jak ustawić bota by mógł nadawać rolę:</strong>
+          <ol>
+            <li>Wejdź w <strong>Ustawienia serwera → Role</strong></li>
+            <li>Przeciągnij rolę bota ${isRC?'RestoreCord':'VaultCord'} <strong>wyżej</strong> niż rolę którą chcesz nadawać</li>
+            <li>Upewnij się że bot ma uprawnienie <strong>Zarządzaj rolami</strong></li>
+          </ol>
+        </div>
+      </div>
+      <button class="btn-continue line-pull-btn" data-line="${line.lineId}" style="margin-top:14px;">🚀 Nadaj backup</button>
+      <div class="status-msg" id="status-${line.lineId}" style="margin-top:8px;"></div>
     </div>`;
   }).join('');
+
+  wrap.innerHTML=`
+    ${botLinksHtml}
+    <div id="pull-section" style="display:none;">
+      ${pullCardsHtml}
+    </div>
+    ${allBots.length?`<button class="btn-continue" id="continue-to-pull-btn" style="margin-top:16px;">✅ Dodałem boty — kontynuuj</button>`:`<div id="pull-section-auto" style="margin-top:4px;">${pullCardsHtml}</div>`}
+  `;
+
+  if(allBots.length){
+    document.getElementById('continue-to-pull-btn').addEventListener('click',()=>{
+      document.getElementById('continue-to-pull-btn').style.display='none';
+      document.getElementById('pull-section').style.display='block';
+    });
+  }
+
   wrap.querySelectorAll('.line-pull-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const lineId=btn.dataset.line;
@@ -833,6 +903,7 @@ function openBotsModal(){
       triggerPull(lineId,line.item,line.qty);
     });
   });
+
   document.getElementById('bots-overlay').classList.add('open');
 }
 
@@ -852,10 +923,10 @@ async function triggerPull(lineId,item,qty){
   status.className='status-msg';
 
   try{
+    const roleInputEl=document.getElementById('role-input-'+lineId);
+    const roleId=roleInputEl?roleInputEl.value.trim():'';
     let res, data;
     if(isRC){
-      const roleInputEl=document.getElementById('role-input-'+lineId);
-      const roleId=roleInputEl?roleInputEl.value.trim():'';
       res=await fetch('/api/restorecord-pull',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
@@ -871,7 +942,7 @@ async function triggerPull(lineId,item,qty){
       res=await fetch('/api/vaultcord-pull',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ vaultcordServerId:item.vaultcordServerId, guildId, limit:qty })
+        body:JSON.stringify({ vaultcordServerId:item.vaultcordServerId, guildId, limit:qty, roleId:roleId||undefined })
       });
     }
     data=await res.json();

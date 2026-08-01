@@ -45,13 +45,18 @@ export default async function handler(req, res) {
     try { data = JSON.parse(text); } catch (e) { data = { raw: text }; }
 
     if (!apiRes.ok) {
-      const msg = (data && (data.message || data.error || data.raw)) || apiRes.statusText;
-      let friendly = `RestoreCord ${apiRes.status}: ${msg}`;
-      if (apiRes.status === 401) friendly = `RestoreCord zwrócił 401 — klucz "${rcKeyName}" jest nieprawidłowy lub wygasł. Sprawdź wartość zmiennej w Vercel.`;
-      else if (apiRes.status === 403) friendly = `RestoreCord zwrócił 403 — klucz nie ma uprawnień do pull_members lub konto nie ma wystarczającego planu.`;
+      // Wyciągamy czytelny komunikat — data może być obiektem z wieloma polami
+      let msgRaw = data?.message || data?.error || data?.errors || data?.raw || apiRes.statusText || 'brak szczegółów';
+      // Jeśli msgRaw to obiekt/tablica, zamieniamy na string
+      if (typeof msgRaw !== 'string') msgRaw = JSON.stringify(msgRaw);
+
+      let friendly = `RestoreCord ${apiRes.status}: ${msgRaw}`;
+      if (apiRes.status === 400) friendly = `RestoreCord zwrócił 400 (błędne dane): ${msgRaw}. Sprawdź czy ID serwera RestoreCord jest poprawne i czy targetGuildId to prawidłowe Discord Guild ID.`;
+      else if (apiRes.status === 401) friendly = `RestoreCord zwrócił 401 — klucz "${rcKeyName}" jest nieprawidłowy lub wygasł. Sprawdź wartość zmiennej w Vercel.`;
+      else if (apiRes.status === 403) friendly = `RestoreCord zwrócił 403 — klucz nie ma uprawnień pull_members lub konto nie ma wystarczającego planu.`;
       else if (apiRes.status === 404) friendly = `RestoreCord zwrócił 404 — serwer o ID "${rcServerId}" nie istnieje lub bot nie ma do niego dostępu.`;
-      else if (apiRes.status === 429) friendly = `Limit zapytań RestoreCord przekroczony (pull cooldown). Spróbuj ponownie za chwilę.`;
-      return res.status(apiRes.status).json({ error: friendly, raw: msg });
+      else if (apiRes.status === 429) friendly = `Limit zapytań RestoreCord przekroczony (pull cooldown 6h na darmowym planie). Spróbuj ponownie za chwilę.`;
+      return res.status(apiRes.status).json({ error: friendly, rawResponse: data });
     }
 
     // Wyciągamy migrationId, jeśli API go zwróciło (do późniejszego śledzenia statusu)

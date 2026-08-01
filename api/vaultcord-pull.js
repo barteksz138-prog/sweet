@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   const payload = req.body || {};
-  const { vaultcordServerId, guildId, limit } = payload;
+  const { vaultcordServerId, guildId, limit, roleId } = payload;
 
   if (!vaultcordServerId) {
     return res.status(400).json({ error: 'Brak vaultcordServerId — ta pullka nie ma skonfigurowanego backupu w panelu admina.' });
@@ -40,6 +40,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         guildid: String(guildId).trim(),
         limit: limit ? parseInt(limit, 10) : undefined,
+        roleId: roleId || undefined,
         skipDuplicate: true,
       }),
     });
